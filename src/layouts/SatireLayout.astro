@@ -1,0 +1,28 @@
+---
+const { title = "TromBologna", description = "Il blog satirico contro il tram", ogImage = "/assets/og.png" } = Astro.props;
+---
+<!DOCTYPE html>
+<html lang="it">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <link rel="stylesheet" href="/styles/global.css" />
+  </head>
+  <body class="font-sans bg-[#faf6f2] text-[#222]">
+    <header class="bg-[#a5160a] text-white py-3 px-6 flex justify-between">
+      <h1 class="text-xl font-bold"><a href="/">TromBologna</a></h1>
+      <nav class="space-x-4">
+        <a href="/news">News</a>
+        <a href="/cartoons">Cartoons</a>
+        <a href="/lucius-montegrot">Intervista</a>
+      </nav>
+    </header>
+    <main class="max-w-3xl mx-auto py-8 px-4">{Astro.children}</main>
+    <footer class="text-center text-sm py-4 bg-gray-100">
+      © {new Date().getFullYear()} TromBologna · Satira no‑profit
+    </footer>
+  </body>
+</html>
