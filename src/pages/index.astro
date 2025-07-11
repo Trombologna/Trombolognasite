@@ -2,7 +2,7 @@
 import SatireLayout from "../layouts/SatireLayout.astro";
 
 // Grab every post under content/news
-const posts = await Astro.glob("../../content/news/*.md");
+const posts = await Astro.glob("../../content/news/*.md"); 
 
 // Sort newest → oldest
 posts.sort((a, b) =>
