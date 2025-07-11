@@ -1,32 +1,29 @@
 name: Deploy Astro site to GitHub Pages
 on:
   push:
-    branches: [ main ]          # rebuild every commit to main
-  workflow_dispatch:            # allow manual trigger
+    branches: [ main ]
+  workflow_dispatch:
 
 permissions:
   contents: read
   pages: write
-  id-token: write               # needed by deploy-pages action
+  id-token: write
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       # 1. Check out source
       - uses: actions/checkout@v4
 
-      # 2. Set up Node
+      # 2. Set up Node (no cache line)
       - uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       # 3. Install & build Astro
-      - run: npm install            # works fine without a lock-file
-
-      - run: npm run build       # output goes to ./dist by default
+      - run: npm install
+      - run: npm run build            # output -> ./dist
 
       # 4. Upload the static site as a Pages artifact
       - uses: actions/upload-pages-artifact@v3
@@ -41,6 +38,5 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
 
     steps:
-      # 5. Deploy the artifact to GitHub Pages
       - id: deployment
         uses: actions/deploy-pages@v4
