@@ -9,6 +9,6 @@ pubDate: 2025-06-21
 
 **Traduzione simultanea:** *“Se finite pure voi, non chiedetemi il rimborso dell’IMU.”*
 
-markdown<br>![Tram works chaos](/assets/cartoons/cartoon2.png)<br>
+markdown<br>![Tram works chaos](public/assets/cartoons/cartoon2.png)<br>
 
 
