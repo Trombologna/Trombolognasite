@@ -24,7 +24,8 @@ jobs:
           cache: 'npm'
 
       # 3. Install & build Astro
-      - run: npm ci
+      - run: npm install            # works fine without a lock-file
+
       - run: npm run build       # output goes to ./dist by default
 
       # 4. Upload the static site as a Pages artifact
