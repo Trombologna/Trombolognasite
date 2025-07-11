@@ -20,7 +20,10 @@ const { title = "TromBologna", description = "Il blog satirico contro il tram", 
         <a href="/lucius-montegrot">Intervista</a>
       </nav>
     </header>
-    <main class="max-w-3xl mx-auto py-8 px-4">{Astro.children}</main>
+    <main class="max-w-3xl mx-auto py-8 px-4">
+  <slot />
+</main>
+
     <footer class="text-center text-sm py-4 bg-gray-100">
       © {new Date().getFullYear()} TromBologna · Satira no‑profit
     </footer>
