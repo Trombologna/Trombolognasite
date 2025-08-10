@@ -1,0 +1,292 @@
+# Create a simple, no-build HTML starter for Trombologna and zip it up
+import os, textwrap, shutil, json, datetime, pathlib
+
+root = "/mnt/data/trombologna-html-starter"
+assets_cartoon_dir = os.path.join(root, "assets", "cartoons")
+assets_css_dir = os.path.join(root, "assets", "css")
+assets_js_dir = os.path.join(root, "assets", "js")
+pages_dir = os.path.join(root, "pages")
+
+# Make directories
+for d in [assets_cartoon_dir, assets_css_dir, assets_js_dir, pages_dir]:
+    os.makedirs(d, exist_ok=True)
+
+# index.html
+index_html = """<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trombologna — Satira su rotaie</title>
+  <meta name="description" content="Satira, meme e cartoni sui cantieri infiniti del tram di Bologna.">
+  <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="./">Trombologna</a>
+      <nav class="nav">
+        <a href="./pages/cartoni.html">Cartoni</a>
+        <a href="./pages/barzellette.html">Barzellette</a>
+        <a href="https://www.trombologna.it" target="_blank" rel="noopener">Sito</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <h1>Trombologna</h1>
+      <p class="tagline">Satira, meme e cartoni sui cantieri eterni del tram. <br class="br-md">Perché se non si può passare, almeno si può ridere.</p>
+    </section>
+
+    <section class="card">
+      <h2>Ultimo cartoon</h2>
+      <figure class="figure">
+        <img src="assets/cartoons/cartoon2.png" alt="Caos lavori del tram a Bologna — cartoon" class="responsive">
+        <figcaption>Se l’immagine non appare, controlla il percorso: <code>assets/cartoons/cartoon2.png</code> (usa percorsi relativi, non <code>/public</code>).</figcaption>
+      </figure>
+    </section>
+
+    <section class="card">
+      <h2>Barzelletta del giorno</h2>
+      <p id="joke-of-day">Caricamento…</p>
+      <p class="small muted">Si aggiorna automaticamente ogni giorno in base alla data.</p>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Trombologna · Bologna, IT</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/script.js"></script>
+</body>
+</html>
+"""
+
+# styles.css
+styles_css = """/* Minimal, zero-build stylesheet */
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
+               Ubuntu, Cantarell, "Helvetica Neue", Arial, "Apple Color Emoji",
+               "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  line-height: 1.6;
+  color: #111;
+  background: #fafafa;
+}
+
+.container { max-width: 960px; margin: 0 auto; padding: 1rem; }
+
+.site-header {
+  background: #111;
+  color: #fff;
+}
+.site-header .container { display: flex; align-items: center; justify-content: space-between; }
+.brand { color: #fff; text-decoration: none; font-weight: 800; letter-spacing: 0.2px; }
+.nav a { color: #fff; text-decoration: none; margin-left: 1rem; opacity: 0.9; }
+.nav a:hover { opacity: 1; text-decoration: underline; }
+
+.hero { padding: 2rem 0 1rem; }
+.hero h1 { margin: 0 0 0.25rem; font-size: 2.25rem; }
+.tagline { margin: 0; opacity: 0.85; }
+.br-md { display: none; }
+@media (min-width: 720px) { .br-md { display: inline; } }
+
+.card {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 12px;
+  padding: 1rem;
+  margin: 1rem 0;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+}
+.figure { margin: 0; }
+.responsive { max-width: 100%; height: auto; display: block; border-radius: 8px; }
+.small { font-size: 0.925rem; }
+.muted { color: #666; }
+
+.site-footer { border-top: 1px solid #eee; margin-top: 2rem; }
+.site-footer p { margin: 0.75rem 0; color: #444; }
+code { background: #f3f3f3; padding: 0.1rem 0.35rem; border-radius: 4px; }
+"""
+
+# script.js
+script_js = """// Trombologna minimal JS (no build step)
+document.addEventListener('DOMContentLoaded', () => {
+  // Year in footer
+  document.getElementById('year').textContent = new Date().getFullYear();
+
+  // Joke of the day (deterministic by day-of-year)
+  const jokes = [
+    "Bologna–San Lazzaro in 12 minuti. Se parti nel 2025, arrivi nel 2036.",
+    "Deviazioni del 14: ora passa in via Marte, poi svolta su Plutone.",
+    "Cantiere notturno: perfetto per chi soffre di insonnia e ama il rumore dei martelli pneumatici.",
+    "Segnale luminoso: verde. Semaforo: rosso. Cantiere: infinito.",
+    "Cartello: 'Ci scusiamo per il disagio'. Il disagio: 'Accetto volentieri le scuse, rimango comunque'.",
+    "Nuova fermata 'Forse': ci passi vicino, ma non ci arrivi mai.",
+    "Il Comune promette: entro l’anno togliamo metà dei cantieri. Quale metà? Quella che riapriamo domani.",
+    "Parcheggi: prima li togliamo, poi li ridipingeremo sui muri. Innovazione!",
+    "Nuova tecnologia: asfalto quantistico. È sia steso che scavato finché non lo guardi.",
+    "Il tram? C’è. Funziona? Schrodinger dice che dipende da dove guardi.",
+    "A Bologna il GPS ha due modalità: 'evita traffico' e 'evita cantieri'. Non sono compatibili.",
+    "Senso unico alternato: per i pedoni, in single file, con pass ordinato del rosario.",
+    "Mappa ufficiale: zona rossa, zona arancione, zona… marmellata.",
+    "Breaking: trovato un tratto senza lavori. Era un cortile privato.",
+    "Slogan: 'Bologna corre'. Certo: via dalle transenne."
+  ];
+
+  const today = new Date();
+  const start = new Date(today.getFullYear(), 0, 0);
+  const diff = today - start;
+  const oneDay = 1000 * 60 * 60 * 24;
+  const dayOfYear = Math.floor(diff / oneDay);
+  const joke = jokes[dayOfYear % jokes.length];
+  const target = document.getElementById('joke-of-day');
+  if (target) target.textContent = joke;
+});
+"""
+
+# pages/cartoni.html
+cartoni_html = """<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Cartoni · Trombologna</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../">Trombologna</a>
+      <nav class="nav">
+        <a href="./cartoni.html">Cartoni</a>
+        <a href="./barzellette.html">Barzellette</a>
+        <a href="https://www.trombologna.it" target="_blank" rel="noopener">Sito</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>I cartoni</h1>
+    <p class="muted">Aggiungi qui le tue immagini: <code>assets/cartoons/...</code>. Usa percorsi relativi: <code>../assets/cartoons/nomefile.png</code>.</p>
+    
+    <div class="card">
+      <figure class="figure">
+        <img src="../assets/cartoons/cartoon2.png" alt="Cartoon lavori tram Bologna" class="responsive">
+        <figcaption>Cartoon d’esempio (sostituisci con i tuoi file).</figcaption>
+      </figure>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Trombologna · Bologna, IT</p>
+    </div>
+  </footer>
+
+  <script src="../assets/js/script.js"></script>
+</body>
+</html>
+"""
+
+# pages/barzellette.html
+barzellette_html = """<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Barzellette · Trombologna</title>
+  <link rel="stylesheet" href="../assets/css/styles.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="brand" href="../">Trombologna</a>
+      <nav class="nav">
+        <a href="./cartoni.html">Cartoni</a>
+        <a href="./barzellette.html">Barzellette</a>
+        <a href="https://www.trombologna.it" target="_blank" rel="noopener">Sito</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <h1>Barzellette</h1>
+    <div class="card">
+      <p><strong>Barzelletta del giorno</strong></p>
+      <p id="joke-of-day">Caricamento…</p>
+      <p class="small muted">La barzelletta qui è la stessa mostrata in home.</p>
+    </div>
+    <div class="card">
+      <p><strong>Archivio (rotazione)</strong></p>
+      <ul id="jokes-archive"></ul>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>© <span id="year"></span> Trombologna · Bologna, IT</p>
+    </div>
+  </footer>
+
+  <script>
+    // Render archivio usando le stesse battute di script.js (copiate qui per pagina standalone)
+    const jokes = [
+      "Bologna–San Lazzaro in 12 minuti. Se parti nel 2025, arrivi nel 2037.",
+      "Deviazioni del 14: ora passa in via Marte, poi svolta su Plutone.",
+      "Cantiere notturno: perfetto per chi soffre di insonnia e ama il rumore dei martelli pneumatici.",
+      "Segnale luminoso: verde. Semaforo: rosso. Cantiere: infinito.",
+      "Cartello: 'Ci scusiamo per il disagio'. Il disagio: 'Accetto volentieri le scuse, rimango comunque'.",
+      "Nuova fermata 'Forse': ci passi vicino, ma non ci arrivi mai.",
+      "Il Comune promette: entro l’anno togliamo metà dei cantieri. Quale metà? Quella che riapriamo domani.",
+      "Parcheggi: prima li togliamo, poi li ridipingeremo sui muri. Innovazione!",
+      "Nuova tecnologia: asfalto quantistico. È sia steso che scavato finché non lo guardi.",
+      "Il tram? C’è. Funziona? Schrodinger dice che dipende da dove guardi.",
+      "A Bologna il GPS ha due modalità: 'evita traffico' e 'evita cantieri'. Non sono compatibili.",
+      "Senso unico alternato: per i pedoni, in single file, con pass ordinato del rosario.",
+      "Mappa ufficiale: zona rossa, zona arancione, zona… ingorgo.",
+      "Breaking: trovato un tratto senza lavori. Era un cortile privato.",
+      "Slogan: 'Bologna corre'. Certo: via dalle transenne."
+    ];
+    const ul = document.getElementById('jokes-archive');
+    jokes.forEach(j => {
+      const li = document.createElement('li');
+      li.textContent = j;
+      ul.appendChild(li);
+    });
+  </script>
+  <script src="../assets/js/script.js"></script>
+</body>
+</html>
+"""
+
+# Write files
+files = {
+    os.path.join(root, "index.html"): index_html,
+    os.path.join(assets_css_dir, "styles.css"): styles_css,
+    os.path.join(assets_js_dir, "script.js"): script_js,
+    os.path.join(pages_dir, "cartoni.html"): cartoni_html,
+    os.path.join(pages_dir, "barzellette.html"): barzellette_html,
+}
+
+for path, content in files.items():
+    with open(path, "w", encoding="utf-8") as f:
+        f.write(content)
+
+# Create a tiny placeholder readme
+readme = """# Trombologna (HTML no-build starter)
+
+- Metti i tuoi cartoni in `assets/cartoons/` e referenziali con percorsi **relativi** (es. `assets/cartoons/cartoon2.png`).
+- Pubblica su GitHub Pages: Settings → Pages → Deploy from Branch → `main`/`root`.
+- Modifica `assets/js/script.js` per aggiungere/variare le barzellette.
+"""
+with open(os.path.join(root, "README.md"), "w", encoding="utf-8") as f:
+    f.write(readme)
+
+# Zip it
+zip_path = shutil.make_archive("/mnt/data/trombologna-html-starter", "zip", root_dir=root)
+zip_path
