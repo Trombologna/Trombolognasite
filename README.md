@@ -2,16 +2,7 @@
 
 Satirical hub mocking Bologna’s tram works.
 
-## Local dev
 
-```bash
-npm install
-npm run dev
-```
-
-## Deploy
-
-GitHub Action `deploy.yml` builds Astro and pushes to `gh-pages`. Enable **Pages** in repo settings: **Source → GitHub Actions**.
 
 ## DNS setup (IONOS)
 
