@@ -90,6 +90,7 @@ em { color: var(--muted); }
 
 .section { padding: 4rem 0; }
 .section__intro { color: var(--muted); }
+.section--tight { padding-top: 2rem; padding-bottom: 2rem; }
 
 .hero {
   padding: 6rem 0 4rem;
