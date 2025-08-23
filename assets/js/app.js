@@ -62,6 +62,11 @@ const VIGNETTE = [
     alt: 'Una caricatura di una lepre con la faccia di Lepore accanto ad un cantiere in mezzo ad un ingorgo.',
     caption: '“Grazie a Trombologna, corro come una Lepore!”'
   },
+    {
+    src: 'assets/img/vignette/Lepore1.png',
+    alt: 'Un'altra caricatura di una lepre con la faccia di Lepore accanto ad un cantiere in mezzo ad un ingorgo.',
+    caption: '“Grazie a Trombologna, corro come una Lepore!”'
+  },
   {
     src: 'assets/img/vignette/cartoon1.png',
     alt: 'Una caricatura di Lepore che guida un tram su Via Ugo Bassi circondato da persone che protestano con le trombette in mano.',
