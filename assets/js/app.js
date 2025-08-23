@@ -320,6 +320,10 @@ function initCarouselVignette() {
     img.alt = item.alt;
     img.loading = 'lazy';
     img.decoding = 'async';
+    img.addEventListener('error', () => {
+    cap.textContent += ' (immagine non trovata)';
+    console.warn('Vignetta non trovata:', item.src);
+    });
 
     const cap = document.createElement('figcaption');
     cap.className = 'carousel__caption';
