@@ -55,6 +55,20 @@
       }
     });
   }
+// === Vignette dataset: add/remove entries as needed
+const VIGNETTE = [
+  {
+    src: 'assets/img/vignette/Lepore2.png',
+    alt: 'Una caricatura di una lepre con la faccia di Lepore accanto ad un cantiere in mezzo ad un ingorgo.',
+    caption: '“Grazie a Trombologna, corro come una Lepore!”'
+  },
+  {
+    src: 'assets/img/vignette/cartoon1.png',
+    alt: 'Una caricatura di Lepore che guida un tram su Via Ugo Bassi circondato da persone che protestano con le trombette in mano.',
+    caption: '“Se continuate a protestare, prolungheremo i cantieri a oltranza!”'
+  },
+  // Aggiungi qui le tue vignette…
+];
 
   // HERO TICKER
   function setupTicker() {
@@ -284,6 +298,114 @@
 
     render();
   }
+function initCarouselVignette() {
+  const el = document.querySelector('[data-carousel="vignette"]');
+  if (!el) return;
+
+  const track = el.querySelector('.carousel__track');
+  const dots = el.querySelector('.carousel__dots');
+  const viewport = el.querySelector('.carousel__viewport');
+
+  // Build slides and dots from VIGNETTE array
+  VIGNETTE.forEach((item, i) => {
+    const li = document.createElement('li');
+    li.className = 'carousel__slide';
+    li.setAttribute('role', 'group');
+    li.setAttribute('aria-label', `${i + 1} di ${VIGNETTE.length}`);
+
+    const fig = document.createElement('figure');
+    const img = document.createElement('img');
+    img.className = 'carousel__img';
+    img.src = item.src;
+    img.alt = item.alt;
+    img.loading = 'lazy';
+    img.decoding = 'async';
+
+    const cap = document.createElement('figcaption');
+    cap.className = 'carousel__caption';
+    cap.textContent = item.caption;
+
+    fig.append(img, cap);
+    li.append(fig);
+    track.append(li);
+
+    const dot = document.createElement('button');
+    dot.className = 'carousel__dot';
+    dot.type = 'button';
+    dot.setAttribute('aria-label', `Vai alla vignetta ${i + 1}`);
+    dot.addEventListener('click', () => goTo(i));
+    dots.append(dot);
+  });
+
+  let index = 0;
+  const prevBtn = el.querySelector('[data-action="prev"]');
+  const nextBtn = el.querySelector('[data-action="next"]');
+  const slidesCount = VIGNETTE.length;
+
+  function update() {
+    track.style.transform = `translateX(-${index * 100}%)`;
+    [...dots.children].forEach((d, i) => d.setAttribute('aria-current', i === index ? 'true' : 'false'));
+    prevBtn.disabled = (index === 0);
+    nextBtn.disabled = (index === slidesCount - 1);
+  }
+  function goTo(i) {
+    index = Math.max(0, Math.min(slidesCount - 1, i));
+    update();
+    resetAutoplay();
+  }
+
+  prevBtn.addEventListener('click', () => goTo(index - 1));
+  nextBtn.addEventListener('click', () => goTo(index + 1));
+
+  // Keyboard navigation on the whole carousel region
+  el.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowLeft') goTo(index - 1);
+    else if (e.key === 'ArrowRight') goTo(index + 1);
+    else if (e.key === 'Home') goTo(0);
+    else if (e.key === 'End') goTo(slidesCount - 1);
+  });
+
+  // Basic swipe (pointer) support
+  let startX = null, activeId = null;
+  viewport.addEventListener('pointerdown', (e) => {
+    startX = e.clientX; activeId = e.pointerId; viewport.setPointerCapture(activeId);
+  });
+  viewport.addEventListener('pointerup', (e) => {
+    if (startX === null) return;
+    const dx = e.clientX - startX;
+    if (dx > 30) goTo(index - 1);
+    else if (dx < -30) goTo(index + 1);
+    startX = null; activeId = null;
+  });
+
+  // Autoplay: pause on hover/focus, respect reduced motion
+  const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let timer = null;
+  function startAutoplay() {
+    if (prefersReduced || slidesCount <= 1) return;
+    timer = setInterval(() => {
+      index = (index + 1) % slidesCount;
+      update();
+    }, 5000);
+  }
+  function stopAutoplay() { if (timer) { clearInterval(timer); timer = null; } }
+  function resetAutoplay() { stopAutoplay(); startAutoplay(); }
+
+  el.addEventListener('mouseenter', stopAutoplay);
+  el.addEventListener('mouseleave', startAutoplay);
+  el.addEventListener('focusin', stopAutoplay);
+  el.addEventListener('focusout', startAutoplay);
+
+  update();
+  startAutoplay();
+}
+
+// Call it on page load
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initCarouselVignette);
+} else {
+  initCarouselVignette();
+}
 
   function csv(s) {
     if (s == null) return '';
