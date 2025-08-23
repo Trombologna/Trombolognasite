@@ -1,0 +1,242 @@
+<!doctype html>
+<html lang="it">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Trombologna – Satira su Rotaie</title>
+  <meta name="description" content="Il sito satirico sui cantieri del tram di Bologna: ritardi, scuse creative e sopravvivenza quotidiana.">
+  <meta name="color-scheme" content="light dark">
+  <link rel="preload" href="assets/css/styles.css" as="style">
+  <link rel="stylesheet" href="assets/css/styles.css">
+  <link rel="icon" href="assets/img/tram.svg">
+  <meta property="og:title" content="Trombologna – Satira su Rotaie">
+  <meta property="og:description" content="Il museo vivente del cantiere permanente.">
+  <meta property="og:type" content="website">
+</head>
+<body>
+  <a class="skip-link" href="#main">Salta al contenuto</a>
+
+  <header class="site-header" data-sticky>
+    <div class="container row header-row">
+      <div class="logo">
+        <img src="assets/img/tram.svg" width="36" height="36" alt="" aria-hidden="true">
+        <span class="logotype">Trombologna</span>
+        <span class="tagline">Satira su rotaie</span>
+      </div>
+      <nav class="nav" aria-label="Principale">
+        <button class="nav__toggle" aria-expanded="false" aria-controls="menu">Menu</button>
+        <ul id="menu" class="nav__list">
+          <li><a href="#cantieri">Stato cantieri</a></li>
+          <li><a href="#strumenti">Strumenti</a></li>
+          <li><a href="#mappa">Mappa ironica</a></li>
+          <li><a href="#segnala">Segnala</a></li>
+          <li><a href="#timeline">Timeline</a></li>
+        </ul>
+      </nav>
+      <button id="theme-toggle" class="btn btn--ghost" aria-pressed="false" title="Cambia tema">🌓</button>
+    </div>
+  </header>
+
+  <main id="main">
+    <section class="hero">
+      <div class="container">
+        <h1 class="hero__title">Trombologna</h1>
+        <p class="hero__subtitle">Il sito ufficiale non ufficiale dei <strong>cantieri infiniti</strong>. Qui contiamo i ritardi, inventiamo scuse migliori di quelle ufficiali e, quando va bene, ridiamo per non piangere.</p>
+        <div class="hero__cta">
+          <a class="btn" href="#strumenti">Vai agli strumenti</a>
+          <a class="btn btn--ghost" href="#cantieri">Vedi lo stato cantieri</a>
+        </div>
+        <div class="hero__ticker" role="status" aria-live="polite">
+          <span class="led"></span>
+          <span id="ticker-text">Sistema di verità in avvio...</span>
+        </div>
+      </div>
+    </section>
+
+    <section id="cantieri" class="section">
+      <div class="container">
+        <h2>Stato cantieri</h2>
+        <p class="section__intro">Mappa non necessaria: basta uscire di casa. Per i più curiosi, ecco i nostri <em>indicatori di avanzamento</em> calibrati con il metodo scientifico del “boh, ci proviamo”.</p>
+        <div class="grid grid--cards" id="cantieri-grid" aria-live="polite">
+          <!-- Cards generate via JS -->
+        </div>
+        <details class="note">
+          <summary>Nota di metodo</summary>
+          <p>Questi dati sono <strong>palesemente satirici</strong> e generati localmente dal tuo dispositivo in base alla data. Per cose serie usa le fonti ufficiali, poi torna qui a sfogarti.</p>
+        </details>
+      </div>
+    </section>
+
+    <section id="strumenti" class="section">
+      <div class="container">
+        <h2>Strumenti del pendolare disperato</h2>
+        <div class="grid">
+          <article class="card">
+            <h3>Generatore di scuse del cantiere</h3>
+            <p>Quando arrivi tardi, lascia parlare il cantiere. Premere il pulsante può causare risate amare.</p>
+            <button id="btn-scusa" class="btn">Genera scusa</button>
+            <output id="scusa-output" class="output" aria-live="polite"></output>
+          </article>
+
+          <article class="card">
+            <h3>Calcolatore di ritardo stimato</h3>
+            <form id="ritardo-form" class="form">
+              <label>Quanti cantieri incontri oggi?
+                <input type="range" min="0" max="12" value="4" id="sld-cantieri">
+              </label>
+              <label>Umore del geometra di zona
+                <select id="sel-umore">
+                  <option value="1">Stoico</option>
+                  <option value="1.2">Rassegnato</option>
+                  <option value="1.5">In ferie mentale</option>
+                  <option value="2">Creativo col nastro bianco-rosso</option>
+                </select>
+              </label>
+              <label>Meteorologia
+                <select id="sel-meteo">
+                  <option value="1">Sereno</option>
+                  <option value="1.3">Pioggerella che diventa alluvione</option>
+                  <option value="1.6">Nebbia padana con colpo di scena</option>
+                </select>
+              </label>
+              <button class="btn" type="submit">Calcola</button>
+            </form>
+            <output id="ritardo-output" class="output" aria-live="polite"></output>
+          </article>
+
+          <article class="card">
+            <h3>Sondaggio lampo</h3>
+            <form id="poll-form" class="form">
+              <fieldset>
+                <legend>Il tram arriverà prima di…</legend>
+                <label><input type="radio" name="poll" value="nevicata"> la prossima nevicata a Ferragosto</label>
+                <label><input type="radio" name="poll" value="scudetto"> il prossimo scudetto del Bologna</label>
+                <label><input type="radio" name="poll" value="heat_death"> la morte termica dell’universo</label>
+              </fieldset>
+              <button class="btn" type="submit">Vota</button>
+            </form>
+            <div class="poll-results" id="poll-results" aria-live="polite"></div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="mappa" class="section">
+      <div class="container">
+        <h2>Mappa ironica dei disagi</h2>
+        <p class="section__intro">Clicca un quartiere per ricevere un bollettino motivazionale.</p>
+        <div class="mappa">
+          <ul class="quartieri" id="quartieri">
+            <li><button data-q="Centro">Centro</button></li>
+            <li><button data-q="San Donato">San Donato</button></li>
+            <li><button data-q="Bolognina">Bolognina</button></li>
+            <li><button data-q="Santo Stefano">Santo Stefano</button></li>
+            <li><button data-q="Savena">Savena</button></li>
+            <li><button data-q="Borgo Panigale">Borgo Panigale</button></li>
+            <li><button data-q="Navile">Navile</button></li>
+            <li><button data-q="Porto-Saragozza">Porto–Saragozza</button></li>
+            <li><button data-q="Reno">Reno</button></li>
+          </ul>
+          <div class="bollettino" id="bollettino" aria-live="polite">Seleziona un quartiere.</div>
+        </div>
+      </div>
+    </section>
+
+    <section id="segnala" class="section">
+      <div class="container">
+        <h2>Segnala un disagio (sfogo costruttivo)</h2>
+        <form id="report-form" class="form">
+          <div class="row gap">
+            <label class="grow">Luogo del misfatto
+              <input type="text" id="rep-luogo" required placeholder="Via, incrocio o fermata">
+            </label>
+            <label>Categoria
+              <select id="rep-cat">
+                <option>Buche</option>
+                <option>Rumore alle 6:00</option>
+                <option>Deviazioni assurde</option>
+                <option>Segnaletica enigmatica</option>
+                <option>Altro</option>
+              </select>
+            </label>
+          </div>
+          <label>Descrizione
+            <textarea id="rep-desc" rows="3" required placeholder="Breve resoconto ironico ma utile"></textarea>
+          </label>
+          <div class="row gap">
+            <label class="grow">Email (facoltativa, non pubblicata)
+              <input type="email" id="rep-email" placeholder="per eventuali chiarimenti">
+            </label>
+            <label>Foto (non caricata, solo titolo)
+              <input type="text" id="rep-foto" placeholder="es. IMG_1234">
+            </label>
+          </div>
+          <div class="row space-between">
+            <button class="btn" type="submit">Invia segnalazione</button>
+            <div class="btn-group">
+              <button class="btn btn--ghost" type="button" id="btn-esporta">Esporta CSV</button>
+              <button class="btn btn--ghost danger" type="button" id="btn-pulisci">Svuota tutto</button>
+            </div>
+          </div>
+        </form>
+
+        <h3 class="mt">Segnalazioni recenti</h3>
+        <ul id="report-list" class="reports" aria-live="polite"></ul>
+      </div>
+    </section>
+
+    <section id="timeline" class="section">
+      <div class="container">
+        <h2>Timeline emozionale del progetto</h2>
+        <ol class="timeline" id="timeline-list">
+          <li>
+            <div class="tl-card">
+              <h3>Fase 0 – Ottimismo</h3>
+              <p>“Ma sì, dai, questa volta spaccano e richiudono in un week-end.”</p>
+            </div>
+          </li>
+          <li>
+            <div class="tl-card">
+              <h3>Fase 1 – Recinzioni</h3>
+              <p>Sorgono barriere che manco a Fort Knox, con passaggi pedonali che sfidano la logica euclidea.</p>
+            </div>
+          </li>
+          <li>
+            <div class="tl-card">
+              <h3>Fase 2 – Scavi con colpo di scena</h3>
+              <p>Spunta un reperto romano, oppure il cavo della fibra del vicino. “Imprevisto” è la parola del mese.</p>
+            </div>
+          </li>
+          <li>
+            <div class="tl-card">
+              <h3>Fase 3 – L’eterna attesa</h3>
+              <p>Il cantiere conosce il tempo circolare: si ripete finché non smetti di contarne i giorni.</p>
+            </div>
+          </li>
+          <li>
+            <div class="tl-card">
+              <h3>Fase 4 – Miracolo</h3>
+              <p>Una squadra appare, posa due mattoni, sparisce fino alla prossima congiunzione astrale.</p>
+            </div>
+          </li>
+          <li>
+            <div class="tl-card">
+              <h3>Fase 5 – Riapertura</h3>
+              <p>La strada torna quasi normale. Rimane una recinzione dimenticata a monito morale.</p>
+            </div>
+          </li>
+        </ol>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p><strong>Trombologna – Satira su Rotaie</strong> • Progetto satirico e amatoriale. Non affiliato a enti pubblici o privati. Qualsiasi somiglianza con la realtà è voluta.</p>
+      <p class="small">Contenuti rilasciati con licenza CC BY-SA 4.0. Nessun dato inviato a server: tutto resta nel tuo browser.</p>
+    </div>
+  </footer>
+
+  <script src="assets/js/app.js" defer></script>
+</body>
+</html>
